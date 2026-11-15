@@ -1,0 +1,732 @@
+{
+  "headline": {
+    "window": "2024-01-01 \u2192 2025-06-30",
+    "attempts": 3877013,
+    "swaps": 3645809,
+    "success_pct": 94.04,
+    "revenue": 233126048.0,
+    "riders_total": 20000,
+    "riders_active": 19950,
+    "stations": 152,
+    "cities": 6,
+    "swaps_per_rider_mean": 194.3,
+    "median_swap_monthly_riders": 7591
+  },
+  "seasonality": {
+    "nonsummer_success_pct": 95.66,
+    "summer24_success_pct": 90.15,
+    "summer25_success_pct": 91.69
+  },
+  "failure_taxonomy": {
+    "swap_completed": 3645809,
+    "failed_no_charged_battery": 134389,
+    "abandoned_queue": 68533,
+    "cancelled_by_rider": 16712,
+    "failed_system_error": 11570
+  },
+  "failure_shares_of_failures": {
+    "abandoned_queue": 29.64,
+    "cancelled_by_rider": 7.23,
+    "failed_no_charged_battery": 58.13,
+    "failed_system_error": 5.0
+  },
+  "system_error_share_range": [
+    0.27,
+    0.32
+  ],
+  "stock_ladder": [
+    {
+      "stock_band": "0 (empty)",
+      "attempts": 58631,
+      "success_pct": 88.457,
+      "no_batt_pct": 7.213,
+      "abandon_pct": 3.595,
+      "median_queue_sec": 201.0
+    },
+    {
+      "stock_band": "1",
+      "attempts": 85622,
+      "success_pct": 92.003,
+      "no_batt_pct": 4.826,
+      "abandon_pct": 2.513,
+      "median_queue_sec": 206.0
+    },
+    {
+      "stock_band": "2\u20133",
+      "attempts": 482826,
+      "success_pct": 93.493,
+      "no_batt_pct": 3.841,
+      "abandon_pct": 1.937,
+      "median_queue_sec": 206.0
+    },
+    {
+      "stock_band": "4\u20136",
+      "attempts": 1293725,
+      "success_pct": 94.091,
+      "no_batt_pct": 3.436,
+      "abandon_pct": 1.745,
+      "median_queue_sec": 206.0
+    },
+    {
+      "stock_band": "7\u201310",
+      "attempts": 1348755,
+      "success_pct": 94.307,
+      "no_batt_pct": 3.278,
+      "abandon_pct": 1.68,
+      "median_queue_sec": 206.0
+    },
+    {
+      "stock_band": "11+",
+      "attempts": 581729,
+      "success_pct": 94.606,
+      "no_batt_pct": 3.074,
+      "abandon_pct": 1.588,
+      "median_queue_sec": 206.0
+    }
+  ],
+  "heat": {
+    "heat_days_success_pct": 85.07,
+    "normal_days_success_pct": 94.5,
+    "heat_attempts": 190246,
+    "coolest_success_pct": 95.41,
+    "hottest_success_pct": 88.09,
+    "charge_min_cool": 74.4,
+    "charge_min_hot": 139.2
+  },
+  "station_spread": {
+    "median_success_pct": 95.01,
+    "best": 95.93,
+    "worst": 90.92,
+    "gen1_success": 92.77,
+    "gen2_success": 95.16
+  },
+  "battery_supplier": [
+    {
+      "supplier": "Amptek",
+      "packs": 1307,
+      "median_deliveries": 648.0,
+      "median_soh_drop": 19.0,
+      "median_current_soh": 80.2,
+      "soh_drop_per_100_deliveries": 2.93
+    },
+    {
+      "supplier": "Cellora",
+      "packs": 3555,
+      "median_deliveries": 649.0,
+      "median_soh_drop": 19.0,
+      "median_current_soh": 80.2,
+      "soh_drop_per_100_deliveries": 2.93
+    },
+    {
+      "supplier": "Kyron",
+      "packs": 1638,
+      "median_deliveries": 401.0,
+      "median_soh_drop": 38.2,
+      "median_current_soh": 61.0,
+      "soh_drop_per_100_deliveries": 9.53
+    }
+  ],
+  "heat_odds_ratio_by_model": {
+    "M1 \u00b7 time+city only": 2.741,
+    "M2 \u00b7 +hardware, heat, battery": 1.65,
+    "M3 \u00b7 +charged stock (mediation)": 1.65
+  },
+  "tickets": {
+    "top_category": "no_battery_available",
+    "top_category_n": 11623,
+    "no_batt_tickets": 11623,
+    "corr_station_success_vs_tickets": -0.633,
+    "median_resolution_hours": 13.2,
+    "resolved_pct": 86.1
+  },
+  "churn": {
+    "churn_pct_60d": 33.9,
+    "churn_by_plan": {
+      "partner_billed": 33.9,
+      "pay_as_you_go": 34.0,
+      "prepaid_pack": 33.3
+    },
+    "churn_spread_city_pp": 11.8,
+    "retention_month12": 58.8
+  },
+  "churn_panel": {
+    "rider_months": 116907,
+    "churn_zero_fail_pct": 10.7,
+    "churn_ge10_fail_pct": 11.3,
+    "churn_lt10_fail_pct": 6.5,
+    "gap_pp": 4.8,
+    "naive_zero_fail_churn_pct": 51.4
+  },
+  "churn_value": {
+    "lost_rider_months": 900.0,
+    "swap_volume_at_risk_pct": 11.52,
+    "avg_gm_per_swap": 44.45
+  },
+  "unit_economics": {
+    "list price per swap": 68.6,
+    "less discounts": -5.82,
+    "= net revenue per swap": 63.94,
+    "less energy cost": -19.5,
+    "= gross margin per swap": 44.45,
+    "less fixed site cost per swap": -17.74,
+    "= contribution per swap": 26.7
+  },
+  "margin_totals": {
+    "revenue": 233126048.0,
+    "gross_margin": 162038928.81431657,
+    "fixed_cost": 64679868.0,
+    "contribution": 97359060.81431657,
+    "list_value": 250108304.0,
+    "discounts": 21228534.0,
+    "discount_pct_of_list": 8.49
+  },
+  "margin_stations": {
+    "negative_contribution_count": 23,
+    "negative_contribution_monthly_inr": -236807.91847880709,
+    "median_contribution_per_swap": 25.78,
+    "worst_station": "STN-MUM-130",
+    "worst_contribution_per_swap": -140.6
+  },
+  "discount": {
+    "pre_nov24_pct": 7.03,
+    "post_nov24_pct": 9.41,
+    "excess_discount_inr": 3917300.0,
+    "amended_partner": "ZipDrop",
+    "amended_discount": "12.0% \u2192 28.0%"
+  },
+  "station_outliers": {
+    "worst_station": "STN-JAI-138",
+    "worst_success_pct": 91.33,
+    "z": -25.3,
+    "all_gen1": true
+  },
+  "kyron": {
+    "packs": 1638,
+    "median_soh": 61.0,
+    "other_median_soh": 80.2,
+    "retired_packs": 1438,
+    "retired_kyron": 1438,
+    "retirement_date": "2025-06-15",
+    "below_70_soh_packs": 1438
+  },
+  "firmware": {
+    "raw_gap_pp": -0.05,
+    "note": "cross-sectional; no rollout observable in event log"
+  },
+  "external_conditions": [
+    {
+      "condition": "heat alert",
+      "attempts": 190246,
+      "success_true_pct": 85.07,
+      "success_false_pct": 94.5,
+      "delta_pp": -9.43
+    },
+    {
+      "condition": "flood disruption",
+      "attempts": 3073,
+      "success_true_pct": 95.54,
+      "success_false_pct": 94.04,
+      "delta_pp": 1.51
+    },
+    {
+      "condition": "public holiday",
+      "attempts": 13945,
+      "success_true_pct": 95.79,
+      "success_false_pct": 94.03,
+      "delta_pp": 1.76
+    },
+    {
+      "condition": "competitor promo",
+      "attempts": 142873,
+      "success_true_pct": 95.64,
+      "success_false_pct": 93.98,
+      "delta_pp": 1.66
+    },
+    {
+      "condition": "e-commerce sale",
+      "attempts": 71600,
+      "success_true_pct": 95.55,
+      "success_false_pct": 94.01,
+      "delta_pp": 1.54
+    },
+    {
+      "condition": "heavy rain (>25 mm)",
+      "attempts": 219319,
+      "success_true_pct": 94.7,
+      "success_false_pct": 94.0,
+      "delta_pp": 0.7
+    }
+  ],
+  "pricing_pilot": {
+    "treated_stations": 56,
+    "did_level_swaps": -38.97,
+    "did_level_pct": -11.69,
+    "log_did_pct": -8.22,
+    "log_did_ci_pct": [
+      -13.5,
+      -2.5
+    ],
+    "did_peak_share_pp": -1.9,
+    "pre_trend_pilot_pct": 36.9,
+    "pre_trend_control_pct": 25.8,
+    "peak_hours": [
+      6,
+      7,
+      8,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22
+    ]
+  },
+  "competitor": {
+    "exposed_stations": 10,
+    "did_swaps": -15.99,
+    "did_pct": -4.34,
+    "log_did_pct": -3.05,
+    "log_did_ci_pct": [
+      -12.6,
+      5.8
+    ]
+  },
+  "solvency": {
+    "start_packs_per_100": 43.3,
+    "peak_packs_per_100": 66.2,
+    "peak_month": "2024-11",
+    "end_packs_per_100": 49.4,
+    "active_may25": 6439,
+    "active_jun25": 5062,
+    "packs_removed_pct": 21.4,
+    "kyron_share_of_fleet": 25.2
+  },
+  "fe_model": {
+    "cabinet (25.0, 35.0]": [
+      1.454,
+      1.438,
+      1.47
+    ],
+    "cabinet (35.0, 40.0]": [
+      1.994,
+      1.964,
+      2.024
+    ],
+    "cabinet (40.0, 45.0]": [
+      3.071,
+      3.023,
+      3.118
+    ],
+    "cabinet (45.0, 50.0]": [
+      3.816,
+      3.74,
+      3.895
+    ],
+    "cabinet (50.0, 99.0]": [
+      3.376,
+      3.258,
+      3.498
+    ]
+  },
+  "thermal_robust": {
+    "within_station_gap_pp": 5.8,
+    "heat_alert_gap_within_summer_pp": 7.11,
+    "hot_hour_attempts": 481106,
+    "pct_attempts_hot": 12.5,
+    "upper_bound_swaps_18m": 27904,
+    "captured_70pct_swaps_18m": 19533
+  },
+  "cooling_targets": [
+    {
+      "station_id": "STN-JAI-138",
+      "hot_attempts": 8971.0,
+      "cool_attempts": 37977.0,
+      "cool_success": 93.38,
+      "hot_success": 82.14,
+      "gap_pp": 11.24,
+      "swaps_at_stake": 1008.14,
+      "city": "Jaipur",
+      "zone": "JAI-Malviya Nagar",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-JAI-134",
+      "hot_attempts": 8621.0,
+      "cool_attempts": 34304.0,
+      "cool_success": 93.79,
+      "hot_success": 82.81,
+      "gap_pp": 10.98,
+      "swaps_at_stake": 946.71,
+      "city": "Jaipur",
+      "zone": "JAI-Malviya Nagar",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-JAI-141",
+      "hot_attempts": 9183.0,
+      "cool_attempts": 36411.0,
+      "cool_success": 93.33,
+      "hot_success": 83.08,
+      "gap_pp": 10.26,
+      "swaps_at_stake": 941.9,
+      "city": "Jaipur",
+      "zone": "JAI-Malviya Nagar",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-DEL-043",
+      "hot_attempts": 9012.0,
+      "cool_attempts": 38593.0,
+      "cool_success": 93.36,
+      "hot_success": 82.92,
+      "gap_pp": 10.44,
+      "swaps_at_stake": 940.74,
+      "city": "Delhi NCR",
+      "zone": "DEL-East",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-DEL-050",
+      "hot_attempts": 8732.0,
+      "cool_attempts": 36422.0,
+      "cool_success": 93.41,
+      "hot_success": 83.01,
+      "gap_pp": 10.41,
+      "swaps_at_stake": 908.85,
+      "city": "Delhi NCR",
+      "zone": "DEL-East",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-JAI-137",
+      "hot_attempts": 8903.0,
+      "cool_attempts": 35468.0,
+      "cool_success": 93.27,
+      "hot_success": 83.22,
+      "gap_pp": 10.05,
+      "swaps_at_stake": 894.83,
+      "city": "Jaipur",
+      "zone": "JAI-Malviya Nagar",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-DEL-047",
+      "hot_attempts": 7855.0,
+      "cool_attempts": 33739.0,
+      "cool_success": 93.68,
+      "hot_success": 82.46,
+      "gap_pp": 11.23,
+      "swaps_at_stake": 881.87,
+      "city": "Delhi NCR",
+      "zone": "DEL-South",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-JAI-140",
+      "hot_attempts": 8542.0,
+      "cool_attempts": 35573.0,
+      "cool_success": 93.46,
+      "hot_success": 83.54,
+      "gap_pp": 9.92,
+      "swaps_at_stake": 847.23,
+      "city": "Jaipur",
+      "zone": "JAI-Malviya Nagar",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-DEL-040",
+      "hot_attempts": 8044.0,
+      "cool_attempts": 32291.0,
+      "cool_success": 93.41,
+      "hot_success": 83.09,
+      "gap_pp": 10.32,
+      "swaps_at_stake": 830.14,
+      "city": "Delhi NCR",
+      "zone": "DEL-South",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-DEL-048",
+      "hot_attempts": 6509.0,
+      "cool_attempts": 28137.0,
+      "cool_success": 93.32,
+      "hot_success": 81.07,
+      "gap_pp": 12.25,
+      "swaps_at_stake": 797.33,
+      "city": "Delhi NCR",
+      "zone": "DEL-West",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-HYD-072",
+      "hot_attempts": 8840.0,
+      "cool_attempts": 42925.0,
+      "cool_success": 93.36,
+      "hot_success": 85.01,
+      "gap_pp": 8.35,
+      "swaps_at_stake": 737.86,
+      "city": "Hyderabad",
+      "zone": "HYD-Hitech City",
+      "charger_generation": "Gen1"
+    },
+    {
+      "station_id": "STN-HYD-070",
+      "hot_attempts": 8206.0,
+      "cool_attempts": 41482.0,
+      "cool_success": 93.79,
+      "hot_success": 85.49,
+      "gap_pp": 8.3,
+      "swaps_at_stake": 681.22,
+      "city": "Hyderabad",
+      "zone": "HYD-South",
+      "charger_generation": "Gen1"
+    }
+  ],
+  "kyron_age_adjusted": {
+    "kyron_coef_pp": -8.66,
+    "kyron_t": -58.69,
+    "kyron_median_age_months": 8.2,
+    "other_median_age_months": 12.1,
+    "kyron_median_deliveries": 401,
+    "other_median_deliveries": 649
+  },
+  "churn_robust": {
+    "gap_ci_pp": [
+      4.4,
+      5.1
+    ]
+  },
+  "partners": [
+    {
+      "partner_id": "FP-01",
+      "attempts": 559823,
+      "swaps": 526620,
+      "riders": 2704,
+      "success_pct": 94.07,
+      "partner_name": "FeastFly",
+      "contract_type": "volume_tiered",
+      "discount_pct": 10.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 10.0
+    },
+    {
+      "partner_id": "FP-02",
+      "attempts": 319275,
+      "swaps": 302506,
+      "riders": 1762,
+      "success_pct": 94.75,
+      "partner_name": "ParcelNest",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 15.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 15.0
+    },
+    {
+      "partner_id": "FP-03",
+      "attempts": 592069,
+      "swaps": 557172,
+      "riders": 2380,
+      "success_pct": 94.11,
+      "partner_name": "ZipDrop",
+      "contract_type": "volume_tiered",
+      "discount_pct": 12.0,
+      "payment_terms_days": 45.0,
+      "discount_pct_after_amendment": 28.0,
+      "effective_discount": 28.0
+    },
+    {
+      "partner_id": "FP-04",
+      "attempts": 149015,
+      "swaps": 134085,
+      "riders": 866,
+      "success_pct": 89.98,
+      "partner_name": "CargoTuk",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 8.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 8.0
+    },
+    {
+      "partner_id": "FP-05",
+      "attempts": 256515,
+      "swaps": 241689,
+      "riders": 1253,
+      "success_pct": 94.22,
+      "partner_name": "Swiggle Go",
+      "contract_type": "volume_tiered",
+      "discount_pct": 11.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 11.0
+    },
+    {
+      "partner_id": "FP-06",
+      "attempts": 127724,
+      "swaps": 120695,
+      "riders": 607,
+      "success_pct": 94.5,
+      "partner_name": "RideMitra",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 6.0,
+      "payment_terms_days": 15.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 6.0
+    },
+    {
+      "partner_id": "FP-07",
+      "attempts": 137831,
+      "swaps": 129967,
+      "riders": 531,
+      "success_pct": 94.29,
+      "partner_name": "QuickCart",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 9.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 9.0
+    },
+    {
+      "partner_id": "FP-08",
+      "attempts": 99116,
+      "swaps": 93376,
+      "riders": 488,
+      "success_pct": 94.21,
+      "partner_name": "DabbaXpress",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 8.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 8.0
+    },
+    {
+      "partner_id": "FP-09",
+      "attempts": 60434,
+      "swaps": 54274,
+      "riders": 370,
+      "success_pct": 89.81,
+      "partner_name": "HaulKing",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 7.0,
+      "payment_terms_days": 45.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 7.0
+    },
+    {
+      "partner_id": "FP-10",
+      "attempts": 88127,
+      "swaps": 83500,
+      "riders": 518,
+      "success_pct": 94.75,
+      "partner_name": "MetroMove",
+      "contract_type": "volume_tiered",
+      "discount_pct": 12.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 12.0
+    },
+    {
+      "partner_id": "FP-11",
+      "attempts": 86846,
+      "swaps": 82103,
+      "riders": 495,
+      "success_pct": 94.54,
+      "partner_name": "LastMileHub",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 10.0,
+      "payment_terms_days": 30.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 10.0
+    },
+    {
+      "partner_id": "FP-12",
+      "attempts": 88703,
+      "swaps": 83854,
+      "riders": 374,
+      "success_pct": 94.53,
+      "partner_name": "UrbanErrand",
+      "contract_type": "pay_per_swap",
+      "discount_pct": 5.0,
+      "payment_terms_days": 15.0,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": 5.0
+    },
+    {
+      "partner_id": "independent",
+      "attempts": 1311535,
+      "swaps": 1235968,
+      "riders": 7602,
+      "success_pct": 94.24,
+      "partner_name": NaN,
+      "contract_type": NaN,
+      "discount_pct": NaN,
+      "payment_terms_days": NaN,
+      "discount_pct_after_amendment": NaN,
+      "effective_discount": NaN
+    }
+  ],
+  "priorities": [
+    {
+      "initiative": "Re-tier partner discounts; cap the amended contract's 28%",
+      "basis": "discount depth 7.0% \u2192 9.4% after Nov-2024",
+      "swaps_recovered": NaN,
+      "margin_inr": 489662.0,
+      "margin_inr_per_month": 489662.0,
+      "annualised_inr": 5875950.0
+    },
+    {
+      "initiative": "Fix or exit the 23 loss-making stations (rent renegotiation, relocation, host change)",
+      "basis": "contribution \u20b9-22/swap vs \u20b926 network median",
+      "swaps_recovered": NaN,
+      "margin_inr": 236808.0,
+      "margin_inr_per_month": 236808.0,
+      "annualised_inr": 2841695.0
+    },
+    {
+      "initiative": "Retrofit Gen1 cabinets to Gen2 charging hardware",
+      "basis": "Gen1 92.8% vs Gen2 95.2% success",
+      "swaps_recovered": 43549.0,
+      "margin_inr": 1935548.0,
+      "margin_inr_per_month": 107530.0,
+      "annualised_inr": 1290365.0
+    },
+    {
+      "initiative": "Virtual queue with wait-time guarantee and auto-hold of a charged pack",
+      "basis": "68,533 queue abandonments, median wait 648s",
+      "swaps_recovered": 34266.0,
+      "margin_inr": 1522984.0,
+      "margin_inr_per_month": 84610.0,
+      "annualised_inr": 1015322.0
+    },
+    {
+      "initiative": "Cool the 12 cabinets with the largest thermal gap (shade, active cooling, charge throttling)",
+      "basis": "within-station success gap 5.8pp between cool and >40\u00b0C hours; 481,106 attempts in hot hours; 70% capture assumed",
+      "swaps_recovered": 19533.0,
+      "margin_inr": 868128.0,
+      "margin_inr_per_month": 48229.0,
+      "annualised_inr": 578752.0
+    },
+    {
+      "initiative": "Hold a minimum charged-pack floor (never let a cabinet hit zero stock)",
+      "basis": "58,631 attempts happen in zero-stock hours at 88.5% success",
+      "swaps_recovered": 3323.0,
+      "margin_inr": 147680.0,
+      "margin_inr_per_month": 8204.0,
+      "annualised_inr": 98453.0
+    },
+    {
+      "initiative": "Replace Kyron pack cohort (1,438 packs written off) and re-bid the supply contract",
+      "basis": "Kyron median SOH 61% vs 80%; 1,438 packs already below 70%",
+      "swaps_recovered": NaN,
+      "margin_inr": NaN,
+      "margin_inr_per_month": NaN,
+      "annualised_inr": NaN
+    }
+  ]
+}

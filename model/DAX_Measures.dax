@@ -1,0 +1,199 @@
+// =====================================================================================
+//  VoltRelay Battery-Swap Analytics — DAX measure library
+//  Paste into Power BI Desktop: Modelling → New measure (one file section at a time),
+//  or use Tabular Editor / DAX Studio → "Paste as measures".
+//
+//  Conventions
+//    * All monetary columns are already materialised in the fact tables (INR).
+//    * Rates are returned as numbers formatted 0.00%; set format string once per measure.
+//    * Measures assume the relationships in README_powerbi.md — do not add your own
+//      fact-to-fact relationships or these totals will double count.
+// =====================================================================================
+
+
+// -------------------------------------------------------------------------------------
+//  1. VOLUME & RELIABILITY      (FactStationDay)
+// -------------------------------------------------------------------------------------
+
+Total Attempts = SUM ( FactStationDay[attempts] )
+
+Completed Swaps = SUM ( FactStationDay[swaps] )
+
+Failures = [Total Attempts] - [Completed Swaps]
+
+Success Rate = DIVIDE ( [Completed Swaps], [Total Attempts] )
+
+// Read this one aloud in the video: it is the headline KPI.
+Success Rate vs Network =
+VAR Network = CALCULATE ( [Success Rate], REMOVEFILTERS ( DimStation ) )
+RETURN [Success Rate] - Network
+
+Failures per 1,000 Attempts = DIVIDE ( [Failures], [Total Attempts] ) * 1000
+
+// Failure taxonomy — the four mutually exclusive event types.
+No-Battery Failures = SUM ( FactStationDay[fail_no_battery] )
+Abandoned Queue     = SUM ( FactStationDay[fail_abandoned] )
+System Errors       = SUM ( FactStationDay[fail_system] )
+Rider Cancellations = SUM ( FactStationDay[fail_cancelled] )
+
+No-Battery Share of Failures = DIVIDE ( [No-Battery Failures], [Failures] )
+Abandon Share of Failures     = DIVIDE ( [Abandoned Queue], [Failures] )
+
+// -------------------------------------------------------------------------------------
+//  2. THERMAL / HEAT EXPOSURE   — the causal story, sized honestly
+// -------------------------------------------------------------------------------------
+
+Heat-Alert Success Rate =
+CALCULATE ( [Success Rate], KEEPFILTERS ( FactStationDay[heat_alert] = 1 ) )
+
+Cool-Day Success Rate =
+CALCULATE ( [Success Rate], KEEPFILTERS ( FactStationDay[heat_alert] = 0 ) )
+
+Heat Gap (pp) = ( [Cool-Day Success Rate] - [Heat-Alert Success Rate] ) * 100
+
+// Attempts that occurred on days with at least one hour above 40 °C.
+Hot-Day Success Rate =
+CALCULATE ( [Success Rate], KEEPFILTERS ( FactStationDay[hot_hour_attempts] > 0 ) )
+
+Hot-Hour Attempts = SUM ( FactStationDay[hot_hour_attempts] )
+
+% Attempts in Hot Hours = DIVIDE ( [Hot-Hour Attempts], [Total Attempts] )
+
+Zero-Stock Success Rate =
+CALCULATE ( [Success Rate], KEEPFILTERS ( FactStationDay[zero_stock_attempts] > 0 ) )
+
+Zero-Stock Hours = CALCULATE ( COUNTROWS ( FactStationDay ), FactStationDay[zero_stock_attempts] > 0 )
+
+Avg Cabinet Temp (C) = AVERAGE ( FactStationDay[cabinet_temp_avg] )
+
+// -------------------------------------------------------------------------------------
+//  3. MONEY                     — unit economics and contribution
+// -------------------------------------------------------------------------------------
+
+Net Revenue    = SUM ( FactStationDay[revenue_inr] )
+List Value     = SUM ( FactStationDay[list_inr] )
+Discount Given = SUM ( FactStationDay[discount_inr] )
+Discount Rate  = DIVIDE ( [Discount Given], [List Value] )
+
+Energy kWh     = SUM ( FactStationDay[energy_kwh] )
+Energy Cost    = SUM ( FactStationDay[energy_cost_inr] )
+Avg Grid Tariff = DIVIDE ( [Energy Cost], [Energy kWh] )
+
+Gross Margin   = SUM ( FactStationDay[gross_margin_inr] )
+Gross Margin % = DIVIDE ( [Gross Margin], [Net Revenue] )
+Revenue per Swap = DIVIDE ( [Net Revenue], [Completed Swaps] )
+GM per Swap    = DIVIDE ( [Gross Margin], [Completed Swaps] )
+kWh per Swap   = DIVIDE ( [Energy kWh], [Completed Swaps] )
+
+// Fixed cost needs the number of station-MONTHS in the current context, so it is
+// computed from the fact's own month column rather than from the date table.
+Active Months = DISTINCTCOUNT ( FactStationDay[month_start] )
+
+Station Months = SUMX ( VALUES ( DimStation[station_id] ), [Active Months] )
+
+Fixed Cost =
+[Active Months] * SUMX ( VALUES ( DimStation[station_id] ), AVERAGE ( DimStation[fixed_monthly_inr] ) )
+
+// The number the report calls "contribution": margin after rent + maintenance.
+Contribution = [Gross Margin] - [Fixed Cost]
+
+Contribution per Station Month = DIVIDE ( [Contribution], [Station Months] )
+
+Loss-Making Stations =
+COUNTROWS ( FILTER ( VALUES ( DimStation[station_id] ), [Contribution] < 0 ) )
+
+// Same comparison across time: which months were contribution-negative?
+Contribution MoM = [Contribution] - CALCULATE ( [Contribution], DATEADD ( DimDate[date], -1, MONTH ) )
+
+// -------------------------------------------------------------------------------------
+//  4. RIDERS, CHURN, RETENTION  (FactRiderMonth + DimRider)
+// -------------------------------------------------------------------------------------
+
+Active Riders = DISTINCTCOUNT ( FactRiderMonth[rider_id] )
+
+New Riders =
+CALCULATE ( COUNTROWS ( DimRider ), TREATAS ( VALUES ( DimDate[date] ), DimRider[signup_date] ) )
+
+Swaps per Active Rider = DIVIDE ( [Completed Swaps], [Active Riders] )
+
+// Rider-level failure exposure: what a rider actually experiences, not what a station reports.
+Rider Failure Rate =
+1 - DIVIDE ( SUM ( FactRiderMonth[swaps] ), SUM ( FactRiderMonth[attempts] ) )
+
+// 2-month churn. Right-censored months are BLANK by design, so the denominator is
+// the count of non-blank values — never rowcount, or the last two months flatter you.
+Riders at Risk = CALCULATE ( COUNT ( FactRiderMonth[churn_next] ) )
+Riders Churned = CALCULATE ( SUM ( FactRiderMonth[churn_next] ) )
+Churn Rate (2m) = AVERAGE ( FactRiderMonth[churn_next] )
+
+Retention Rate (2m) = 1 - [Churn Rate (2m)]
+
+Riders Lost to Stockout =
+CALCULATE ( [Riders at Risk], FactRiderMonth[stockout] > 0 )
+
+// DELIBERATE OMISSION — "churn of riders who hit a stockout" is NOT provideable here.
+// Riders who hit stockouts are high-activity riders, and high activity is what predicts
+// retention, so the naive cut runs backwards: 5.75% churn for riders who hit a stockout
+// vs 8.82% for those who did not. Shipping that as a card would be actively misleading.
+// The defensible version of the claim is the rider-month panel model in the notebook
+// (§11, +4.8pp churn for low-activity riders, bootstrap CI [4.4, 5.1]), which conditions
+// on activity. Use the fields below if you want to rebuild it in DAX.
+
+Rider-Months = COUNTROWS ( FactRiderMonth )
+Rider-Months | Stockout = CALCULATE ( COUNTROWS ( FactRiderMonth ), FactRiderMonth[stockout] > 0 )
+Rider-Months | Abandoned = CALCULATE ( COUNTROWS ( FactRiderMonth ), FactRiderMonth[abandoned] > 0 )
+Avg Swaps per Rider-Month = DIVIDE ( SUM ( FactRiderMonth[swaps] ), [Rider-Months] )
+
+// Churn by city / partner / segment needs no special measure: just put the DimRider column
+// on the axis. Those are between-rider contrasts, so they are not confounded the way the
+// within-rider stockout cut was.
+
+// -------------------------------------------------------------------------------------
+//  5. SUPPORT & FLEET HEALTH    (FactTicket, DimBattery)
+// -------------------------------------------------------------------------------------
+
+Tickets = COUNTROWS ( FactTicket )
+
+Tickets per 1,000 Swaps = DIVIDE ( [Tickets], [Completed Swaps] / 1000 )
+
+Resolved % = DIVIDE ( CALCULATE ( COUNTROWS ( FactTicket ), FactTicket[is_resolved] = 1 ), [Tickets] )
+
+Avg Resolution Hours = AVERAGE ( FactTicket[resolution_hours] )
+
+CSAT = AVERAGE ( FactTicket[csat_score] )
+
+// Battery table is a snapshot; it is related to FactTicket only (see README), so these
+// measures respond to battery slicers, not to the date slicer. That is intentional.
+Packs in Fleet   = COUNTROWS ( DimBattery )
+Median Pack SOH  = MEDIAN ( DimBattery[current_soh_pct] )
+Packs Below 65% SOH = CALCULATE ( COUNTROWS ( DimBattery ), DimBattery[current_soh_pct] < 65 )
+% Fleet Below 65 = DIVIDE ( [Packs Below 65% SOH], [Packs in Fleet] )
+Retired Packs    = CALCULATE ( COUNTROWS ( DimBattery ), DimBattery[is_retired] = 1 )
+Deliveries per Pack = DIVIDE ( SUM ( DimBattery[deliveries] ), [Packs in Fleet] )
+
+// -------------------------------------------------------------------------------------
+//  6. TIME INTELLIGENCE         (requires DimDate marked as a date table)
+// -------------------------------------------------------------------------------------
+
+Attempts MoM % =
+VAR Prev = CALCULATE ( [Total Attempts], DATEADD ( DimDate[date], -1, MONTH ) )
+RETURN DIVIDE ( [Total Attempts] - Prev, Prev )
+
+Success Rate 3M MA =
+AVERAGEX ( DATESINPERIOD ( DimDate[date], MAX ( DimDate[date] ), -3, MONTH ), [Success Rate] )
+
+Success Rate YoY (pp) =
+( [Success Rate] - CALCULATE ( [Success Rate], SAMEPERIODLASTYEAR ( DimDate[date] ) ) ) * 100
+
+// One number for the executive slide: latest full month, not a hand-picked day.
+Success Rate Latest Month =
+CALCULATE ( [Success Rate], LASTNONBLANK ( DimDate[month_start], [Total Attempts] ) )
+
+// -------------------------------------------------------------------------------------
+//  7. PRIORITISATION            — keeps the dashboard's action tab honest
+// -------------------------------------------------------------------------------------
+
+// 6-month run-rate margin, used to annualise an initiative's value.
+Annualised GM Run-Rate =
+VAR Months = DISTINCTCOUNT ( FactStationDay[month_start] )
+RETURN DIVIDE ( [Gross Margin], Months ) * 12

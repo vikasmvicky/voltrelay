@@ -1,0 +1,51 @@
+Total Attempts                                  3,877,013  OK
+Completed Swaps                                 3,645,809  OK
+Failures                                          231,204  OK
+Success Rate                                       94.04%  OK
+No-Battery Failures                               134,389  OK
+Abandoned Queue                                    68,533  OK
+No-Battery Share of Failures                       58.13%  OK
+Heat-Alert Success Rate                            85.07%  OK
+Cool-Day Success Rate                              94.50%  OK
+Heat Gap (pp)                                        9.43  OK
+Hot-Day Success Rate                               90.17%  OK
+Hot-Hour Attempts                                 481,106  OK
+% Attempts in Hot Hours                             12.4%
+Zero-Stock Success Rate                            89.14%
+Avg Cabinet Temp (C)                                 26.8
+Net Revenue                                Rs 233,126,056
+List Value                                 Rs 266,772,580
+Discount Rate                                       8.49%
+Energy Cost                                 Rs 71,087,125
+Gross Margin                               Rs 162,038,931
+Gross Margin %                                     69.51%
+GM per Swap                                      Rs 44.45  OK
+kWh per Swap                                        2.093
+Active Months                                          18  OK
+Station Months                                      2,073
+Fixed Cost                                  Rs 64,679,868
+Contribution                                Rs 97,359,063
+Contribution per Station Month                  Rs 46,965
+Loss-Making Stations                                   23  OK
+Contribution per Swap                            Rs 26.70  OK
+Annualised GM Run-Rate                     Rs 108,025,954  OK
+Active Riders                                      19,950  OK
+Riders at Risk                                    116,907
+Churn Rate (2m)                                     7.29%  OK
+Churn | Stockout Hit (confounded)                   5.75%
+Churn | No Stockout                                 8.82%
+  ^ runs backwards; report uses the panel model, not this                  0
+Churn | Queue Abandoned                             5.45%
+Rider Failure Rate                                  5.96%
+Tickets                                            44,000  OK
+Tickets per 1,000 Swaps                             12.07
+Resolved %                                          86.1%
+Avg Resolution Hours                                 16.0
+CSAT                                                 3.56
+Packs in Fleet                                      6,500  OK
+Median Pack SOH                                      79.8
+Packs Below 65% SOH                                 1,377
+Retired Packs                                       1,438  OK
+
+notebook headline success rate: 94.04%  |  fact: 94.04%
+notebook annual swaps: 3,645,809  |  fact: 3,645,809 over 18 months

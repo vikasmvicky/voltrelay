@@ -1,0 +1,169 @@
+// =====================================================================================
+//  VoltRelay star schema — Power Query M
+//  Power BI Desktop → Get Data → Blank query → Advanced Editor → paste.
+//
+//  Set MODEL_PATH to the folder that contains these CSVs (Windows or Mac path), then
+//  refresh. Each query below is one table; create them one at a time.
+// =====================================================================================
+
+
+// ============ 0. Shared helpers =====================================================
+
+// MODEL_PATH — change this to wherever you put the model/ folder. Do not hard-code a
+// OneDrive path with your name in it if you plan to share the .pbix.
+MODEL_PATH = "C:\VoltRelay\model"   // meta: edit this one line
+
+// fnLoadCsv — one loader for every table, so delimiter/encoding/quoting is consistent.
+// Text columns stay text; only keys and numerics are typed (avoid "123" → number on IDs).
+let
+    fnLoadCsv = (FileName as text, ColumnTypes as type) as table =>
+    let
+        Source   = Csv.Document ( File.Contents ( MODEL_PATH & "\" & FileName ),
+                                  [ Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv ] ),
+        Promoted = Table.PromoteHeaders ( Source, [ PromoteAllScalars = true ] ),
+        Typed    = Table.TransformColumnTypes ( Promoted, ColumnTypes ),
+        Trimmed  = Table.TransformColumns ( Typed,
+                     List.Transform ( Table.ColumnNames ( Typed ), each { _, Text.Trim, type text } ),
+                     null, MissingField.Ignore )
+    in
+        Trimmed
+in
+    fnLoadCsv
+
+
+// ============ 1. Dimensions =========================================================
+
+// DimDate — mark this table as the date table (Table tools → Mark as date table → date).
+let
+    Source = fnLoadCsv ( "dim_date.csv", type table [
+        date = type date, date_key = Int64.Type, year = Int64.Type, quarter = text,
+        month = Int64.Type, month_name = text, month_start = type date, year_month = text,
+        week_start = type date, day_of_week = Int64.Type, day_name = text,
+        is_weekend = Int64.Type, season = text, is_summer = Int64.Type ] )
+in
+    Source
+
+// DimStation — city is the filter path to DimCity's measures.
+let
+    Source = fnLoadCsv ( "dim_station.csv", type table [
+        station_id = text, city = text, zone = text, latitude = type number, longitude = type number,
+        location_type = text, host_type = text, commissioned_date = type date,
+        decommissioned_date = type date, expansion_wave = text, charger_generation = text,
+        slots_2w = Int64.Type, slots_3w = Int64.Type, capacity_slots = Int64.Type,
+        inventory_target_2w = Int64.Type, inventory_target_3w = Int64.Type,
+        monthly_rent_inr = type number, monthly_maintenance_inr = type number,
+        fixed_monthly_inr = type number, grid_tariff_inr_kwh = type number,
+        connectivity_tier = text, station_firmware = text, firmware_updated_date = type date,
+        has_competitor = Int64.Type, competitor_since = type date ] ),
+    // A "Station" label that reads well on a visual axis.
+    Labeled = Table.AddColumn ( Source, "station_label",
+                each [station_id] & " · " & [city] & " · " & [zone], type text )
+in
+    Labeled
+
+// DimCity
+let
+    Source = fnLoadCsv ( "dim_city.csv", type table [
+        city = text, stations = Int64.Type, competitor_stations = Int64.Type,
+        slots_2w = Int64.Type, avg_grid_tariff_inr_kwh = type number ] )
+in
+    Source
+
+// DimRider
+let
+    Source = fnLoadCsv ( "dim_rider.csv", type table [
+        rider_id = text, partner_id = text, partner_name = text, partner_segment = text,
+        vehicle_class = text, vehicle_model = text, home_city = text, home_zone = text,
+        signup_date = type date, signup_channel = text, plan_type = text, declared_shift = text,
+        age_band = text, kyc_verified = type logical, first_swap = type datetime,
+        last_swap = type datetime, lifetime_attempts = Int64.Type, lifetime_swaps = Int64.Type,
+        lifetime_failures = Int64.Type, lifetime_failure_rate = type number,
+        days_since_last_swap = Int64.Type, churned_30d = Int64.Type, churned_60d = Int64.Type,
+        churned_90d = Int64.Type ] )
+in
+    Source
+
+// DimBattery
+let
+    Source = fnLoadCsv ( "dim_battery.csv", type table [
+        battery_id = text, pack_type = text, supplier = text, manufacturing_lot = text,
+        manufacture_date = type date, commission_date = type date,
+        rated_capacity_kwh = type number, purchase_cost_inr = type number,
+        initial_soh_pct = type number, bms_firmware = text, retired_date = type date,
+        retirement_reason = text, current_soh_pct = type number, soh_band = text,
+        deliveries = Int64.Type, age_months_snapshot = type number,
+        soh_drop_pp = type number, is_retired = Int64.Type ] )
+in
+    Source
+
+// DimPartner
+let
+    Source = fnLoadCsv ( "dim_partner.csv", type table [
+        partner_id = text, partner_name = text, partner_segment = text, vehicle_class = text,
+        contract_type = text, contract_start_date = type date, discount_pct = type number,
+        amendment_date = type date, discount_pct_after_amendment = type number,
+        effective_discount_pct = type number, peak_surcharge_billable = type logical,
+        payment_terms_days = Int64.Type, cities_active = text, n_cities = Int64.Type ] )
+in
+    Source
+
+
+// ============ 2. Facts ==============================================================
+
+// FactStationDay — the primary fact. One row per station per active day (~62k).
+let
+    Source = fnLoadCsv ( "fact_station_day.csv", type table [
+        date_key = Int64.Type, date = type date, month_start = type date, station_id = text,
+        city = text, attempts = Int64.Type, swaps = Int64.Type, failures = Int64.Type,
+        fail_no_battery = Int64.Type, fail_abandoned = Int64.Type, fail_cancelled = Int64.Type,
+        fail_system = Int64.Type, revenue_inr = type number, list_inr = type number,
+        discount_inr = type number, energy_kwh = type number, energy_cost_inr = type number,
+        gross_margin_inr = type number, hot_hour_attempts = Int64.Type,
+        zero_stock_attempts = Int64.Type, queue_wait_mean_sec = type number,
+        cabinet_temp_avg = type number, cabinet_temp_max = type number,
+        chargers_online_avg = type number, heat_alert = Int64.Type, rainfall_mm = type number,
+        is_public_holiday = Int64.Type, festival_or_event = type logical,
+        competitor_promo_active = Int64.Type, ecommerce_sale_event = type logical,
+        grid_outage_hours = type number ] )
+in
+    Source
+
+// FactRiderMonth — rider-month grain, the only valid source for churn.
+let
+    Source = fnLoadCsv ( "fact_rider_month.csv", type table [
+        date_key = Int64.Type, month_start = type date, rider_id = text, attempts = Int64.Type,
+        swaps = Int64.Type, fail_rate = type number, abandoned = Int64.Type,
+        stockout = Int64.Type, next_month_active = type logical,
+        returned_within_2m = type logical, churn_next = Int64.Type ] ),
+    // Explicitly keep right-censored months BLANK rather than 0.
+    Censored = Table.ReplaceValue ( Source, "", null, Replacer.ReplaceValue, { "churn_next" } )
+in
+    Censored
+
+// FactTicket
+let
+    Source = fnLoadCsv ( "fact_ticket.csv", type table [
+        ticket_id = text, date_key = Int64.Type, created_date = type date,
+        created_hour = Int64.Type, rider_id = text, station_id = text, battery_id = text,
+        channel = text, category = text, priority = text, resolution_status = text,
+        is_resolved = Int64.Type, resolution_hours = type number, csat_score = type number ] )
+in
+    Source
+
+// FactStationHour — 1.49M rows, gzip. Import only if you want thermal drill-through;
+// otherwise remove this query to keep the .pbix small.
+let
+    Source  = Csv.Document ( File.Contents ( MODEL_PATH & "\fact_station_hour.csv.gz" ),
+                             [ Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv ] ),
+    Promoted = Table.PromoteHeaders ( Source, [ PromoteAllScalars = true ] ),
+    Typed = Table.TransformColumnTypes ( Promoted, {
+        { "date_key", Int64.Type }, { "hour_start", type datetime }, { "station_id", type text },
+        { "hour", Int64.Type }, { "charged_2w_avg", type number }, { "charged_2w_min", Int64.Type },
+        { "charged_3w_min", Int64.Type }, { "packs_charging", Int64.Type },
+        { "packs_quarantined", Int64.Type }, { "chargers_online", Int64.Type },
+        { "ambient_temp_c", type number }, { "cabinet_temp_c", type number },
+        { "avg_charge_minutes", type number }, { "outage_minutes", Int64.Type },
+        { "grid_kwh", type number }, { "telemetry_status", type text },
+        { "attempts", Int64.Type }, { "swaps", Int64.Type } } )
+in
+    Typed

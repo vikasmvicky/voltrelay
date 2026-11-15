@@ -1,0 +1,11 @@
+# Notebook core (Colab already ships all of these)
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+scipy>=1.10
+jupyter
+nbconvert
+jupytext
+# Report PDF build only
+reportlab>=4.0
+pypdf
